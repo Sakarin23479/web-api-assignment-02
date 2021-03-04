@@ -4,6 +4,30 @@ const app = express()
 app.use(express.json())
 let books = [] //arry ตั้งแต่0->n-1 << before mongodb
 
+
+app.get('/books', (req, res) => {
+    //input*
+
+    //process*
+
+    //output*
+    res.status(200).json(books)
+})
+
+
+app.get('/books/:id', (req, res) =>{
+    //input*
+    let id = req.params.id
+    // console.log(`id: ${id}`) <<เช็คว่า id ออกมาไหม
+     let book = {} //<<ประกาศเป็น object << before mongodb
+    
+    //process*
+    book = books[id] //<< before
+
+    //output*
+    res.status(200).json(book)
+
+})
 //POST /`movies`
 //npm install --save-prod express <<ติดตั้ง express แบบ production
 //npm install --save-dev nodemon <<ติดตั้ง nodemon แบบ development dependency << restart server ให้ auto ไม่ต้องทำเอง
