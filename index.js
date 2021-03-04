@@ -1,33 +1,22 @@
 const express = require('express')
+const MongoClient = require('mongodb').MongoClient
+const ObjectId = require('mongodb').ObjectId
 const app = express()
 
 app.use(express.json())
-let books = [] //arry ตั้งแต่0->n-1 << before mongodb
+// let books = [] //arry ตั้งแต่0->n-1 << before mongodb
 
+const url = 'mongodb+srv://superadmin:23479.naruto@cluster0.wm519.mongodb.net/mbooks?retryWrites=true&w=majority'
+const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true })
+let db,bookscollection
 
-app.get('/books', (req, res) => {
-    //input*
+async function connect(){
+    await client.connect()
+    db = client.db('mbooks')
+    bookscollection = db.collection('books')
+}
+connect()
 
-    //process*
-
-    //output*
-    res.status(200).json(books)
-})
-
-
-app.get('/books/:id', (req, res) =>{
-    //input*
-    let id = req.params.id
-    // console.log(`id: ${id}`) <<เช็คว่า id ออกมาไหม
-     let book = {} //<<ประกาศเป็น object << before mongodb
-    
-    //process*
-    book = books[id] //<< before
-
-    //output*
-    res.status(200).json(book)
-
-})
 //POST /`movies`
 //npm install --save-prod express <<ติดตั้ง express แบบ production
 //npm install --save-dev nodemon <<ติดตั้ง nodemon แบบ development dependency << restart server ให้ auto ไม่ต้องทำเอง
@@ -36,7 +25,7 @@ app.get('/books/:id', (req, res) =>{
 // เรียกใช้ nodemon index.js
 // << npm run dev ใช้ run dev ที่กำหนดใน package.json
 
-app.post('/books', (req, res) => { //<<แอโร่ function
+app.post('/books', async (req, res) => { //<<แอโร่ function
 
     //input*
     let newtitle = req.body.title //<<ตรง.title กำหนดเองชื่ออื่นได้ 
@@ -55,9 +44,10 @@ app.post('/books', (req, res) => { //<<แอโร่ function
     let bookID = 0
 
     //process*
-   
-   books.push(newBook) //<<insert ต่อท้ายไปเรื่อยๆ << before mongodb
-   bookID = books.length - 1 //<< before mongodb
+    const result = await bookscollection.insertOne(newBook)
+//    books.push(newBook) //<<insert ต่อท้ายไปเรื่อยๆ << before mongodb
+    bookID = result.insertedId
+//    bookID = books.length - 1 //<< before mongodb
 
     //output*
 
