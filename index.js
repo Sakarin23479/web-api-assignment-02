@@ -17,6 +17,32 @@ async function connect(){
 }
 connect()
 
+app.get('/books', async (req, res) => {
+    //input*
+
+    //process*
+    const cursor = await bookscollection.find({})
+    const result = await cursor.toArray()
+
+    //output*
+    res.status(200).json(result)
+})
+
+
+app.get('/books/:id', async (req, res) =>{
+    //input*
+    let id = req.params.id
+    // console.log(`id: ${id}`) <<เช็คว่า id ออกมาไหม
+    //  let book = {} //<<ประกาศเป็น object << before mongodb
+    
+    //process*
+    // book = books[id] //<< before
+    const book = await bookscollection.findOne({ _id: ObjectId(id)})
+
+    //output*
+    res.status(200).json(book)
+
+})
 //POST /`movies`
 //npm install --save-prod express <<ติดตั้ง express แบบ production
 //npm install --save-dev nodemon <<ติดตั้ง nodemon แบบ development dependency << restart server ให้ auto ไม่ต้องทำเอง
